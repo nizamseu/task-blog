@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
-  if (router.pathname === "/dashboard") {
+  if (router.pathname == "/dashboard") {
     return (
       <Layout>
         <Component {...pageProps} />

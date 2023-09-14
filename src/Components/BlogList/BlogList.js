@@ -3,20 +3,21 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
+import { useRouter } from "next/router";
 const BlogList = () => {
   const [blogsobj, setBlogobj] = useState([]);
-
+  const router = useRouter();
   useEffect(() => {
     retrive_blog();
   }, []);
   console.log("blogsobj", blogsobj);
   async function retrive_blog() {
     await axios
-      .get(`https://admin.iou.ac/api/v1/article/`)
+      .get(`http://localhost:3000/api/v1/blog/blog/`)
       .then((res) => {
         console.log("res", res);
-        setBlogobj(res?.data?.results);
-        // setBlogobj(res?.data?.data);
+        // setBlogobj(res?.data?.results);
+        setBlogobj(res?.data?.data);
       })
       .catch((err) => {});
   }
@@ -67,7 +68,9 @@ const BlogList = () => {
                 <td className="px-6 py-4 w-64">
                   <div className="  w-full">
                     <button
-                      onClick={() => router.push(`/edit-user/${item?.id}`)}
+                      onClick={() =>
+                        router.push(`/dashboard/edit_post/${item?._id}`)
+                      }
                       className="mx-1 py-2 bg-yellow-600 text-white px-2  rounded-full"
                     >
                       <BiEdit size={16} />
