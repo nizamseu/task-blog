@@ -16,6 +16,7 @@
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.11.0",
     "react-loader-spinner": "^5.4.5",
     "react-quill": "^2.0.0",
     "sweetalert2": "^11.7.27",

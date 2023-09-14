@@ -65,7 +65,7 @@ const Blog = () => {
         .post("/api/v1/blog/blog", data)
         .then((res) => {
           SuccessAlert("Post Created Successfully");
-          // router.push('/')
+          router.push("/dashboard/blog_list");
           setIsLoading(false);
         })
         .catch((err) => {
@@ -85,7 +85,7 @@ const Blog = () => {
     setFormData({ ...formData, thumbnail: file });
   };
   return (
-    <div className=" max-w-5xl md:py-5 w-full  mx-auto ">
+    <div className="  w-full  mx-auto ">
       <form className=" bg-white p-4 md:p-10 rounded " onSubmit={handleSubmit}>
         <div className=" mb-4">
           <label className=" text-sm font-bold ">Title</label>
