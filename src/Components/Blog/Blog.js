@@ -7,7 +7,7 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import { RotatingLines } from "react-loader-spinner";
 import SuccessAlert from "../util/SuccessAlert";
 import { useRouter } from "next/router";
-
+import { RxCross2 } from "react-icons/rx";
 const modules = {
   toolbar: [
     [{ header: "1" }, { header: "2" }, { header: "3" }, { font: [] }],
@@ -34,6 +34,7 @@ const Blog = () => {
   const [isFile, setIsFile] = useState(false);
   const [isdetails, setisdetails] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageURL, setImageURL] = useState(null);
   const router = useRouter();
   const handleChange = (e) => {
     setSelectedFile(URL?.createObjectURL(e.target.files[0]));
@@ -44,11 +45,6 @@ const Blog = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    if (file === null || selectedFile === null) {
-      setIsFile(true);
-      setIsLoading(false);
-      return;
-    }
 
     if (description === null || !description) {
       setisdetails(true);
@@ -58,7 +54,7 @@ const Blog = () => {
     const data = {
       title,
       content: description,
-      thumbnail: file,
+      thumbnail: imageURL,
     };
     try {
       const response = await axios
@@ -101,78 +97,39 @@ const Blog = () => {
             />
           </div>
         </div>
-
-        <div>
-          <label className=" text-sm font-bold form-label ">Thumbnail</label>
-          {/* modal Content  */}
-          <div>
-            <div className="  ">
+        {imageURL ? (
+          <div className=" relative rounded h-32 object-fill w-full md:w-52  flex items-center justify-center  border  ">
+            <img
+              src={imageURL}
+              className="rounded h-32 w-full md:w-52 object-fill "
+              id="output"
+            />
+            <button
+              onClick={() => {
+                setImageURL(null);
+              }}
+              className=" text-white hover:text-red-400 hover:bg-white bg-red-400 rounded-full absolute top-0 right-0 "
+            >
+              <RxCross2 size={30} />
+            </button>
+          </div>
+        ) : (
+          <div className=" mb-4">
+            <label className=" text-sm font-bold ">Thumbnail URL</label>
+            <div className=" w-full  border rounded">
               <input
-                accept="image/png, image/jpeg"
-                type="file"
-                className="hidden"
-                id="image-upload"
-                onChange={handleChange}
-                name="thumbnail"
+                defaultValue={imageURL}
+                className=" w-full focus:border-none px-4 py-2  "
+                required
+                type="text"
+                name="imageUrl"
+                placeholder="thumbnail url"
+                value={imageURL}
+                onChange={(e) => setImageURL(e.target.value)}
               />
-              <label
-                htmlFor="image-upload"
-                className=" rounded h-32 object-fill w-full md:w-52   cursor-pointer flex items-center justify-center  border border-gray-400 text-gray-400  hover:bg-gray-100"
-              >
-                {selectedFile ? (
-                  <img
-                    src={selectedFile}
-                    className="rounded h-32 w-full md:w-52 object-fill "
-                    id="output"
-                  />
-                ) : (
-                  <svg
-                    className="h-12 w-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h32a2 2 0 002-2V6a2 2 0 00-2-2h2a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                )}
-
-                <span className="text-lg font-medium">
-                  {selectedFile ? selectedFile.name : ""}
-                </span>
-              </label>
             </div>
           </div>
-          {isFile && (
-            <p className="text-sm my-2">
-              {" "}
-              <div className="flex items-center space-x-1">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="w-4 h-4 text-[#D9001B]"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                    />
-                  </svg>
-                </div>
-                <div className="text-[#D9001B]">Select an thumbnail</div>
-              </div>{" "}
-            </p>
-          )}
-        </div>
+        )}
 
         <div className=" relative mt-6">
           <label className=" text-sm font-bold form-label  mb-2 ">

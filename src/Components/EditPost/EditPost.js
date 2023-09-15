@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import { RotatingLines } from "react-loader-spinner";
+import { RxCross2 } from "react-icons/rx";
 
 import { useRouter } from "next/router";
 import SuccessAlert from "../util/SuccessAlert";
@@ -54,6 +55,7 @@ const EditPost = () => {
         setTitle(data?.results?.title);
         setDescription(data?.results?.content);
         setData(data?.results);
+        setImageURL(data?.results?.thumbnail);
       })
       .catch((error) => console.error("Error fetching course:", error));
   };
@@ -120,22 +122,27 @@ const EditPost = () => {
           </div>
         </div>
         {imageURL ? (
-          <div
-            htmlFor="image-upload"
-            className=" rounded h-32 object-fill w-full md:w-52   cursor-pointer flex items-center justify-center  border border-gray-400 text-gray-400  hover:bg-gray-100"
-          >
+          <div className=" relative rounded h-32 object-fill w-full md:w-52  flex items-center justify-center  border  ">
             <img
               src={imageURL}
               className="rounded h-32 w-full md:w-52 object-fill "
               id="output"
             />
+            <button
+              onClick={() => {
+                setImageURL(null);
+              }}
+              className=" text-white hover:text-red-400 hover:bg-white bg-red-400 rounded-full absolute top-0 right-0 "
+            >
+              <RxCross2 size={30} />
+            </button>
           </div>
         ) : (
           <div className=" mb-4">
             <label className=" text-sm font-bold ">Thumbnail URL</label>
             <div className=" w-full  border rounded">
               <input
-                defaultValue={data?.thumbnail}
+                defaultValue={data?.imageURL}
                 className=" w-full focus:border-none px-4 py-2  "
                 required
                 type="text"
