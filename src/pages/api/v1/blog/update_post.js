@@ -1,11 +1,13 @@
 // pages/api/update-post.js
+import { connectToDatabase } from "@/Components/util/mongodb";
 import { ObjectId } from "mongodb";
-import { connectToDatabase } from "../../utils/mongodb"; // Replace with your MongoDB connection code
 
 export default async function handler(req, res) {
   if (req.method === "PATCH") {
+    const { db } = await connectToDatabase();
     try {
       const { postId, title, content } = req.body;
+      console.log(req.body);
       let thumbnailBase64 = null;
 
       if (req.files && req.files.thumbnail) {
@@ -15,20 +17,19 @@ export default async function handler(req, res) {
         const thumbnailMimeType = thumbnail.mimetype;
         thumbnailBase64 = `data:${thumbnailMimeType};base64,${thumbnailData}`;
       }
-
-      const { db } = await connectToDatabase(); // Replace with your MongoDB connection code
+      const postID = new ObjectId(postId);
+      // Replace with your MongoDB connection code
 
       const response = await db.collection("posts").updateOne(
-        { _id: ObjectId(postId) }, // Assuming postId is the MongoDB ObjectId of the post to update
+        { _id: postID }, // Assuming postId is the MongoDB ObjectId of the post to update
         {
           $set: {
             title,
-            thumbnail: thumbnailBase64,
             content,
           },
         }
       );
-
+      console.log("response", response);
       if (response.modifiedCount === 1) {
         res.status(200).json({
           status: "success",
