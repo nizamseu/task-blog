@@ -14,14 +14,16 @@ const Sidebar = ({}) => {
     }
   };
   return (
-    <div className=" w-52 bg-white border shadow-sm rounded-sm  pt-4 pb-7">
+    <div className=" bg-white border shadow-sm rounded-sm  pt-4 pb-7">
       <h3 className=" my-2 font-bold text-center">Side Bar Menu</h3>
 
       <div
         onClick={() => handlesidebar(1)}
         className={` ${
-          router.pathname === "/dashboard" && " bg-gray-100"
-        } form-check flex  p-2  `}
+          router.pathname === "/dashboard"
+            ? " bg-gray-100"
+            : " hover:bg-gray-100 cursor-pointer"
+        } form-check flex  p-2   `}
       >
         <input
           checked={router.pathname === "/dashboard"}
@@ -42,7 +44,9 @@ const Sidebar = ({}) => {
       <div
         onClick={() => handlesidebar(2)}
         className={` ${
-          router.pathname.includes("dashboard/blog_list") && " bg-gray-100"
+          router.pathname.includes("dashboard/blog_list")
+            ? " bg-gray-100"
+            : " hover:bg-gray-100 cursor-pointer"
         } form-check flex  p-2  `}
       >
         <input

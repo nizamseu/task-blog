@@ -17,7 +17,6 @@ const BlogList = () => {
     await axios
       .get(`http://localhost:3000/api/v1/blog/blog/`)
       .then((res) => {
-        console.log("res", res);
         // setBlogobj(res?.data?.results);
         setBlogobj(res?.data?.data);
       })

@@ -14,7 +14,6 @@ export default function HomePage() {
   const { query } = router.query;
   const [serachText, setSerachText] = useState(query);
 
-  console.log(query);
   useEffect(() => {
     retrive_blog();
   }, []);
@@ -63,13 +62,15 @@ export default function HomePage() {
   const handleSearchBTN = () => {
     findBlog();
   };
+
+  // const theObj = { __html: data?.content };
   return (
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Blog</title>
       </Head>
-      <div className="max-w-7xl mx-auto my-10">
+      <div className="max-w-7xl mx-auto my-10 px-4">
         <div className="pt-4">
           <h3 className="text-center text-md md:text-2xl font-semibold font-sans">
             The Power of Knowledge: Exploring Diverse Subjects in Education
@@ -301,11 +302,12 @@ export default function HomePage() {
                               </h2>
                             </div>
 
-                            <div>
-                              <p className="text-gray-700 text-justify">
-                                {item?.body?.split(0, 1)}...
-                              </p>
-                            </div>
+                            <div
+                              className="text-gray-700 text-justify mt-10 "
+                              dangerouslySetInnerHTML={{
+                                __html: item?.content?.slice(0, 300).trim(),
+                              }}
+                            ></div>
                           </div>
                         </div>
                       </div>

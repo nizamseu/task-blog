@@ -17,8 +17,6 @@ export default function BlogDetails() {
     }
   }, [id]);
 
-  console.log("data", data);
-
   const loadBlog = async () => {
     await axios.get(`/api/v1/blog/${id}/`).then((res) => {
       setData(res?.data?.results);
@@ -51,6 +49,7 @@ export default function BlogDetails() {
   return (
     <>
       <Head>
+        <title>{data?.title}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       {data?._id ? (

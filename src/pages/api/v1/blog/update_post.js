@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const { db } = await connectToDatabase();
     try {
       const { postId, title, content } = req.body;
-      console.log(req.body);
+
       let thumbnailBase64 = null;
 
       if (req.files && req.files.thumbnail) {
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
           },
         }
       );
-      console.log("response", response);
+
       if (response.modifiedCount === 1) {
         res.status(200).json({
           status: "success",

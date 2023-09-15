@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       // const { db } = await connectToDatabase();
 
       const response = await db.collection("posts").findOne({ _id: postID });
-      console.log("response", response);
+
       if (response) {
         res.status(200).json({
           status: "success",
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     const { id } = req.query;
     const { title, content, thumbnail, createdAt } = req.body;
     const postID = new ObjectId(id);
-    console.log("req.body", req.body);
+
     const response = await db.collection("posts").updateOne(
       { _id: postID },
       {
@@ -43,8 +43,6 @@ export default async function handler(req, res) {
         },
       }
     );
-
-    console.log("response", response);
 
     if (response.modifiedCount === 1) {
       res.status(200).json({
@@ -60,7 +58,7 @@ export default async function handler(req, res) {
     const postID = new ObjectId(id);
 
     const response = await db.collection("posts").deleteOne({ _id: postID });
-    console.log("response", response);
+
     if (response.deletedCount === 1) {
       res.status(200).json({
         status: "success",

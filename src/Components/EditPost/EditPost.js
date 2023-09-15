@@ -41,7 +41,7 @@ const EditPost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { id } = router.query;
-  console.log(id);
+
   useEffect(() => {
     if (id) {
       loadData();
@@ -89,7 +89,6 @@ const EditPost = () => {
         })
         .catch((err) => {
           setIsLoading(false);
-          console.log(err);
         });
     } catch (error) {
       setIsLoading(false);
@@ -102,7 +101,6 @@ const EditPost = () => {
     setisdetails(false);
   };
 
-  console.log("data", data);
   return (
     <div className="  w-full  mx-auto ">
       <form className=" bg-white p-4 md:p-10 rounded " onSubmit={handleSubmit}>

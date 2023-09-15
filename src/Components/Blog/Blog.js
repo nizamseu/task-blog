@@ -64,9 +64,7 @@ const Blog = () => {
           router.push("/dashboard/blog_list");
           setIsLoading(false);
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     } catch (error) {
       console.error("Error creating blog post:", error);
     }
