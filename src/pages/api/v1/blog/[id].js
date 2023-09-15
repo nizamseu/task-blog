@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "PATCH") {
     const { id } = req.query;
-    const { title, content, thumbnail } = req.body;
+    const { title, content, thumbnail, createdAt } = req.body;
     const postID = new ObjectId(id);
     console.log("req.body", req.body);
     const response = await db.collection("posts").updateOne(
@@ -39,6 +39,7 @@ export default async function handler(req, res) {
           thumbnail,
           title,
           content,
+          updatedAt: new Date(),
         },
       }
     );
@@ -46,6 +47,21 @@ export default async function handler(req, res) {
     console.log("response", response);
 
     if (response.modifiedCount === 1) {
+      res.status(200).json({
+        status: "success",
+        response,
+      });
+    } else {
+      res.status(404).json({ error: "Post not found" });
+    }
+  } else if (req.method === "DELETE") {
+    const { id } = req.query;
+
+    const postID = new ObjectId(id);
+
+    const response = await db.collection("posts").deleteOne({ _id: postID });
+    console.log("response", response);
+    if (response.deletedCount === 1) {
       res.status(200).json({
         status: "success",
         response,

@@ -4,13 +4,15 @@ import React, { useEffect, useState } from "react";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete } from "react-icons/ai";
 import { useRouter } from "next/router";
+import SuccessAlert from "../util/SuccessAlert";
+import Swal from "sweetalert2";
 const BlogList = () => {
   const [blogsobj, setBlogobj] = useState([]);
   const router = useRouter();
   useEffect(() => {
     retrive_blog();
   }, []);
-  console.log("blogsobj", blogsobj);
+
   async function retrive_blog() {
     await axios
       .get(`http://localhost:3000/api/v1/blog/blog/`)
@@ -21,6 +23,32 @@ const BlogList = () => {
       })
       .catch((err) => {});
   }
+
+  async function handleDelete(id) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const deleteBlog = async () => {
+          await axios
+            .delete(`http://localhost:3000/api/v1/blog/${id}/`)
+            .then((res) => {
+              retrive_blog();
+              SuccessAlert("DELETED", "error");
+            })
+            .catch((err) => {});
+        };
+        deleteBlog();
+      }
+    });
+  }
+
   return (
     <div className=" bg-white   rounded px-6 py-2 pb-16 w-full min-h-screen  ">
       <div className=" flex justify-end">
@@ -38,12 +66,7 @@ const BlogList = () => {
               <th scope="col" class="px-6 py-3">
                 Title
               </th>
-              <th scope="col" class="px-6 py-3">
-                Full Name
-              </th>{" "}
-              <th scope="col" class="px-6 py-3">
-                Role
-              </th>
+
               <th scope="col" class="px-6 py-3">
                 Action
               </th>
@@ -58,12 +81,6 @@ const BlogList = () => {
                 <th class="px-6 py-4">
                   <p>{item?.title}</p>
                 </th>
-                <th class="px-6 py-4">
-                  <p>{item?.first_name + " " + item?.last_name}</p>
-                </th>
-                <th class="px-6 py-4">
-                  <p>{item?.role}</p>
-                </th>
 
                 <td className="px-6 py-4 w-64">
                   <div className="  w-full">
@@ -77,7 +94,7 @@ const BlogList = () => {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(item?.id)}
+                      onClick={() => handleDelete(item?._id)}
                       className=" py-2 bg-red-600 text-white px-2  rounded-full"
                     >
                       <AiFillDelete size={16} />

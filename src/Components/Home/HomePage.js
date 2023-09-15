@@ -1,27 +1,68 @@
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
+import Loader from "../util/Loader";
 
 export default function HomePage() {
   const [blogsobj, setBlogobj] = useState();
-  const [email, setEmail] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+  const { query } = router.query;
+  const [serachText, setSerachText] = useState(query);
+
+  console.log(query);
   useEffect(() => {
     retrive_blog();
   }, []);
-  console.log("blogsobj", blogsobj);
+
   async function retrive_blog() {
+    setIsLoading(true);
     await axios
-      .get(`https://admin.iou.ac/api/v1/article/`)
+      .get(`/api/v1/blog/blog/`)
       .then((res) => {
-        console.log("res", res);
-        setBlogobj(res?.data?.results);
-        // setBlogobj(res?.data?.data);
+        setIsLoading(false);
+        // setBlogobj(res?.data?.results);
+        setBlogobj(res?.data?.data);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        setIsLoading(false);
+      });
   }
 
+  useEffect(() => {
+    if (query) {
+      findBlog();
+    }
+  }, [query]);
+
+  async function findBlog() {
+    setIsLoading(true);
+    await axios
+      .get(`/api/v1/blog/find_blog/?query=${query}`)
+      .then((res) => {
+        setIsLoading(false);
+
+        setBlogobj(res?.data?.data);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
+  }
+
+  const handleSearch = (e) => {
+    // setSerachText(e);
+    router.push({
+      pathname: "/",
+      query: { query: e },
+    });
+  };
+  const handleSearchBTN = () => {
+    findBlog();
+  };
   return (
     <>
       <Head>
@@ -34,7 +75,7 @@ export default function HomePage() {
             The Power of Knowledge: Exploring Diverse Subjects in Education
           </h3>
           <p className="text-center py-2 text-gray-600 text-sm md:text-basic ">
-            Subscribe to learn about new topics, technologies, and updates
+            Search to learn about new topics, technologies, and others
           </p>
 
           <div className="max-w-lg md:max-w-xl mx-auto py-4">
@@ -55,27 +96,27 @@ export default function HomePage() {
                 </svg>
               </div>
               <input
-                onChange={(e) => setEmail(e?.target?.value)}
-                value={email}
+                onChange={(e) => handleSearch(e?.target?.value)}
+                value={query}
                 type="search"
                 id="default-search"
                 className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-gray-900 focus:border-gray-900 "
-                placeholder="Enter your email"
+                placeholder="Search here"
                 required
               ></input>
               <button
+                onClick={handleSearchBTN}
                 type="submit"
                 className="text-white absolute right-2.5 bottom-2.5 bg-black hover:bg-gray-800 focus:ring-3 focus:outline-none focus:ring-gray-400 font-medium rounded-lg text-sm px-4 py-2 "
-                // onClick={(e) => subscribe_email(e)}
               >
-                Subscribe
+                Search
               </button>
             </div>
           </div>
         </div>
 
         {/* recent */}
-        <div className="mx-4 my-6">
+        {/* <div className="mx-4 my-6">
           <h3 className="font-semibold">Recent blog posts</h3>
 
           <div className="grid grid-rows-1 md:grid-rows-3 md:grid-flow-col gap-4 my-4">
@@ -222,51 +263,66 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* recent */}
 
-        <div className="py-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {blogsobj?.map((item, index) => (
-              <div className="" key={index}>
-                <Link href={`blog/${item?.slug}/`}>
-                  <div>
-                    <div>
-                      <img
-                        src={item?.thumbnail}
-                        alt=""
-                        className="rounded-lg object-cover"
-                      />
-                    </div>
-                    <div className="my-4">
-                      <div className="flex flex-col space-y-2">
+        {isLoading ? (
+          <div className=" flex justify-center mt-10">
+            <Loader />
+          </div>
+        ) : (
+          <div className="py-10">
+            {blogsobj?.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {blogsobj?.map((item, index) => (
+                  <div className="" key={index}>
+                    <Link href={`blog/${item?._id}/`}>
+                      <div>
                         <div>
-                          <p className="text-sm text-gray-700">
-                            By {item?.user_name}{" "}
-                            {new Date(item?.created_at).toLocaleString()}
-                          </p>
+                          <img
+                            src={item?.thumbnail}
+                            alt=""
+                            className="rounded-lg object-cover h-44 w-full"
+                          />
                         </div>
+                        <div className="my-4">
+                          <div className="flex flex-col space-y-2">
+                            <div>
+                              <p className="text-sm text-gray-700">
+                                By {"admin"}{" "}
+                                {new Date(item?.createdAt).toLocaleString()}
+                              </p>
+                            </div>
 
-                        <div>
-                          <h2 className="text-basic md:text-lg font-semibold break-all  ">
-                            {item?.title}
-                          </h2>
-                        </div>
+                            <div>
+                              <h2 className="text-basic md:text-lg font-semibold break-all  ">
+                                {item?.title}
+                              </h2>
+                            </div>
 
-                        <div>
-                          <p className="text-gray-700 text-justify">
-                            {item?.body?.split(0, 1)}...
-                          </p>
+                            <div>
+                              <p className="text-gray-700 text-justify">
+                                {item?.body?.split(0, 1)}...
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </div>
-                </Link>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className=" w-full flex justify-center ">
+                <p className="text-gray-300 text-2xl text-center  my-10 w-full ">
+                  There is no data found
+                </p>
+              </div>
+            )}
           </div>
-        </div>
+        )}
+
         {/* all blog  */}
       </div>
     </>

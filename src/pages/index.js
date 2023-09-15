@@ -6,8 +6,8 @@ export default function Home() {
   return (
     <main>
       {/* <Blog /> */}
-      {/* <HomePage /> */}
-      <BlogList />
+      <HomePage />
+      {/* <BlogList /> */}
     </main>
   );
 }
