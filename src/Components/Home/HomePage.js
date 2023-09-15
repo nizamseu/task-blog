@@ -302,12 +302,12 @@ export default function HomePage() {
                               </h2>
                             </div>
 
-                            <div
+                            {/* <div
                               className="text-gray-700 text-justify mt-10 "
                               dangerouslySetInnerHTML={{
-                                __html: item?.content?.slice(0, 300).trim(),
+                                __html: item?.content?.slice(0, 300).trim()
                               }}
-                            ></div>
+                            ></div> */}
                           </div>
                         </div>
                       </div>
