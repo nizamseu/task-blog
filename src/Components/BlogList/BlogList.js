@@ -15,7 +15,7 @@ const BlogList = () => {
 
   async function retrive_blog() {
     await axios
-      .get(`http://localhost:3000/api/v1/blog/blog/`)
+      .get(`/api/v1/blog/blog/`)
       .then((res) => {
         // setBlogobj(res?.data?.results);
         setBlogobj(res?.data?.data);
