@@ -36,7 +36,7 @@ const BlogList = () => {
       if (result.isConfirmed) {
         const deleteBlog = async () => {
           await axios
-            .delete(`http://localhost:3000/api/v1/blog/${id}/`)
+            .delete(`/api/v1/blog/${id}/`)
             .then((res) => {
               retrive_blog();
               SuccessAlert("DELETED", "error");
